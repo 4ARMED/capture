@@ -1,0 +1,26 @@
+service: capture
+
+provider:
+  name: aws
+  runtime: nodejs6.10
+  stage: dev
+  region: eu-west-1
+  environment:
+    FROM_ADDRESS: ${env:FROM_ADDRESS} # "4ARMED Research <someaddress@mailinator.com>"
+    TO_ADDRESS: ${env:TO_ADDRESS} # "4ARMED Research <someaddress@mailinator.com>"
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+        - "ses:SendEmail"
+        - "ses:SendRawEmail"
+      Resource: "*"
+
+functions:
+  capture:
+    handler: handler.capture
+    events:
+      - http:
+          path: capture
+          method: post
+          cors: true
+
