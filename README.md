@@ -1,6 +1,6 @@
 # Capture
 
-This is a very simple "Serverless" function that takes input from a POST request and, optionally, performs a redirect to a URL specified in the query string.
+This is a very simple "Serverless" function that takes input from a POST request, emails it to you (via AWS SES) and then, optionally, performs a redirect to a URL specified in the query string.
 
 Why would I write something like this? It's very handy when producing proof of concepts for [open redirection](https://www.owasp.org/index.php/Unvalidated_Redirects_and_Forwards_Cheat_Sheet) issues.
 
@@ -16,7 +16,11 @@ If you deploy this code to AWS you _might_ get charged. That's up to you to know
 
 First thing to do is clone this repo.
 
-```git clone https://github.com/4armed/capture.git```
+```$ git clone https://github.com/4armed/capture.git```
 
+Now set two environment variables for the to and from email addresses for the function.
 
-
+```
+$ export TO_ADDRESS="4ARMED Testing <someone@mailinator.com>"
+$ export FROM_ADDRESS="4ARMED Capture <somethingelse@mailinator.com>"
+```
