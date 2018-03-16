@@ -61,3 +61,83 @@ functions:
 
 So in this example, my URL was `https://xfv3tpk5ni.execute-api.eu-west-1.amazonaws.com/prod/capture`.
 
+#### Email verification
+
+Before you can use this, you will need to verify the recipient you set in $TO_ADDRESS with AWS SES. If you have the AWS CLI installed (`pip install awscli`) this is a simple job of:
+
+```
+$ aws ses verify-email-identity --email-address someone@mailinator.com
+```
+
+You will receive an email to that address with a link that needs clicking to show you have access to that email box.
+
+#### Testing
+
+A simple cURL will do it.
+
+```
+$ curl -d 'This is a test' https://xfv3tpk5ni.execute-api.eu-west-1.amazonaws.com/prod/capture
+ok
+```
+
+If you want to specify a redirect, use the _target_ query string parameter.
+
+```
+$ curl -v -d 'This is a test' https://xfv3tpk5ni.execute-api.eu-west-1.amazonaws.com/prod/capture?target=https://www.4armed.com/
+*   Trying 54.230.14.102...
+* TCP_NODELAY set
+* Connected to xfv3tpk5ni.execute-api.eu-west-1.amazonaws.com (54.230.14.102) port 443 (#0)
+* ALPN, offering h2
+* ALPN, offering http/1.1
+* Cipher selection: ALL:!EXPORT:!EXPORT40:!EXPORT56:!aNULL:!LOW:!RC4:@STRENGTH
+* successfully set certificate verify locations:
+*   CAfile: /etc/ssl/cert.pem
+  CApath: none
+* TLSv1.2 (OUT), TLS handshake, Client hello (1):
+* TLSv1.2 (IN), TLS handshake, Server hello (2):
+* TLSv1.2 (IN), TLS handshake, Certificate (11):
+* TLSv1.2 (IN), TLS handshake, Server key exchange (12):
+* TLSv1.2 (IN), TLS handshake, Server finished (14):
+* TLSv1.2 (OUT), TLS handshake, Client key exchange (16):
+* TLSv1.2 (OUT), TLS change cipher, Client hello (1):
+* TLSv1.2 (OUT), TLS handshake, Finished (20):
+* TLSv1.2 (IN), TLS change cipher, Client hello (1):
+* TLSv1.2 (IN), TLS handshake, Finished (20):
+* SSL connection using TLSv1.2 / ECDHE-RSA-AES128-GCM-SHA256
+* ALPN, server accepted to use h2
+* Server certificate:
+*  subject: CN=*.execute-api.eu-west-1.amazonaws.com
+*  start date: Dec  6 00:00:00 2017 GMT
+*  expire date: Dec  6 12:00:00 2018 GMT
+*  subjectAltName: host "xfv3tpk5ni.execute-api.eu-west-1.amazonaws.com" matched cert's "*.execute-api.eu-west-1.amazonaws.com"
+*  issuer: C=US; O=Amazon; OU=Server CA 1B; CN=Amazon
+*  SSL certificate verify ok.
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x7fde1e804800)
+> POST /prod/capture?target=https://www.4armed.com/ HTTP/2
+> Host: xfv3tpk5ni.execute-api.eu-west-1.amazonaws.com
+> User-Agent: curl/7.54.0
+> Accept: */*
+> Content-Length: 14
+> Content-Type: application/x-www-form-urlencoded
+>
+* Connection state changed (MAX_CONCURRENT_STREAMS updated)!
+* We are completely uploaded and fine
+< HTTP/2 302
+< content-type: application/json
+< content-length: 0
+< location: https://www.4armed.com/
+< date: Fri, 16 Mar 2018 23:44:24 GMT
+< x-amzn-requestid: f4dc82b3-2973-11e8-911a-0b31388dd085
+< x-amzn-trace-id: sampled=0;root=1-5aac56d8-d795cda6f1c652be0f282198
+< x-cache: Miss from cloudfront
+< via: 1.1 1e075734d681989d6cd80021b52ec2d1.cloudfront.net (CloudFront)
+< x-amz-cf-id: P4VFTeAbbjvnwqSS6bDcca_1ng4qd-IN9S8TGsh79Z6sXSPRGMQXEA==
+<
+* Connection #0 to host xfv3tpk5ni.execute-api.eu-west-1.amazonaws.com left intact
+```
+
+
+
